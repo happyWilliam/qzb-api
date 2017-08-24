@@ -22,7 +22,7 @@ class Member extends Api {
                 'pwd' => array('name' => 'pwd', 'require' => true, 'min' => 1, 'max' => '30', 'desc' => '密码'),
                 'real_name' => array('name' => 'real_name', 'min' => 1, 'max' => '30', 'desc' => '真实姓名'),
                 'mobile' => array('name' => 'mobile', 'regex' => "/^1[34578]\d{9}$/", 'desc' => '手机号码'),
-                'gender' => array('name' => 'gender', 'type' => 'enum', 'range' => array('0', '1', '-1'))
+                'gender' => array('name' => 'gender', 'require' => true, 'type' => 'enum', 'range' => array('0', '1', '-1'), 'desc' => '性别')
             ),
             'get' => array(
                 'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
