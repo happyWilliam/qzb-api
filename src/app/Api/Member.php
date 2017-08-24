@@ -21,22 +21,22 @@ class Member extends Api {
                 'login_name' => array('name' => 'login_name', 'require' => true, 'min' => 1, 'max' => '30', 'desc' => '登录用户名'),
                 'pwd' => array('name' => 'pwd', 'require' => true, 'min' => 1, 'max' => '30', 'desc' => '密码'),
                 'real_name' => array('name' => 'real_name', 'min' => 1, 'max' => '30', 'desc' => '真实姓名'),
-                'mobile' => array('name' => 'mobile', 'min' => 1, 'max' => '11', 'desc' => '手机号码'),
+                'mobile' => array('name' => 'mobile', 'regex' => "/^1[34578]\d{9}$/", 'desc' => '手机号码'),
                 'gender' => array('name' => 'gender', 'type' => 'enum', 'range' => array('0', '1', '-1'))
             ),
             'get' => array(
                 'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
             ),
             'getList' => array(
-                'page' => array('name' => 'page', 'type' => 'int', 'min' => 1, 'default' => 1, 'desc' => '第几页'),
-                'perpage' => array('name' => 'perpage', 'type' => 'int', 'min' => 1, 'max' => 20, 'default' => 10, 'desc' => '分页数量'),
-                'state' => array('name' => 'state', 'type' => 'int', 'default' => 0, 'desc' => '状态'),
+                'pageNo' => array('name' => 'pageNo', 'type' => 'int', 'min' => 1, 'default' => 1, 'desc' => '第几页'),
+                'pageSize' => array('name' => 'pageSize', 'type' => 'int', 'min' => 1, 'default' => 10, 'desc' => '分页数量，默认10条'),
+                'status' => array('name' => 'status', 'type' => 'int', 'desc' => '会员状态'),
             ),
             'update' => array(
                 'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
                 'login_name' => array('name' => 'login_name', 'require' => true, 'min' => 1, 'max' => '30', 'desc' => '登录用户名'),
                 'real_name' => array('name' => 'real_name', 'min' => 1, 'max' => '30', 'desc' => '真实姓名'),
-                'mobile' => array('name' => 'mobile', 'min' => 1, 'max' => '11', 'desc' => '手机号码'),
+                'mobile' => array('name' => 'mobile', 'regex' => "/^1[34578]\d{9}$/", 'desc' => '手机号码'),
                 'gender' => array('name' => 'gender', 'type' => 'enum', 'range' => array('0', '1', '-1')),
             ),            
             'delete' => array(
