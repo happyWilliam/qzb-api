@@ -13,7 +13,9 @@ return array(
      * 应用接口层的统一参数
      */
     'apiCommonRules' => array(
-        //'sign' => array('name' => 'sign', 'require' => true),
+        // 'sign' => array('name' => 'sign', 'require' => true),
+        // 1-PC，2-安卓，3-苹果手机
+        'channel' => array('name' => 'channel', 'require' => false, 'default' => 1, 'desc' => '请求来源，1-PC，2-安卓，3-苹果手机')
     ),
 
     /**
