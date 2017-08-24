@@ -1,9 +1,9 @@
 <?php
 namespace App\Domain;
 
-use App\Model\Member as Model;
+use App\Model\User as Model;
 
-class Member {
+class User {
 
     public function login($params) {
         $model = new Model();

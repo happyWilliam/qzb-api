@@ -16,10 +16,10 @@ CREATE TABLE `phalapi_curd` (
 
  */
 
-class Member extends NotORM {
+class User extends NotORM {
 
     protected function getTableName($id) {
-        return 'member';
+        return 'user';
     }
 
     public function login($params) {

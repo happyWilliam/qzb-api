@@ -2,14 +2,14 @@
 namespace App\Api;
 
 use PhalApi\Api;
-use App\Domain\Member as Domain;
+use App\Domain\User as Domain;
 
 /**
  * 会员管理操作
  * 
  */
 
-class Member extends Api {
+class User extends Api {
 
     public function getRules() {
         return array(
