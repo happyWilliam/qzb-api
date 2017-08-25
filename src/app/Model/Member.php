@@ -35,8 +35,7 @@ class Member extends NotORM {
         $this->formatExtData($data);        
         $notorm = $this->getORM($id);
         $notorm->insert($data);
-
-        return $notorm->insert_id();    
+        return $this->get($notorm->insert_id(), 'id, login_name, real_name, mobile, pwd, balance, gender, create_time');  
     }    
 
     public function get($id, $fields = '*') {

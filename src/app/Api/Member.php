@@ -18,7 +18,7 @@ class Member extends Api {
                 'pwd' => array('name' => 'pwd', 'require' => true, 'min' => 1, 'max' => 30, 'desc' => '登录密码'),
             ),
             'register' => array(
-                'login_name' => array('name' => 'login_name', 'require' => true, 'min' => 1, 'max' => '30', 'desc' => '登录用户名'),
+                'login_name' => array('name' => 'login_name', 'require' => true, 'min' => 1, 'max' => '30', 'desc' => '登录用户名'),                
                 'pwd' => array('name' => 'pwd', 'require' => true, 'min' => 1, 'max' => '30', 'desc' => '密码'),
                 'real_name' => array('name' => 'real_name', 'min' => 1, 'max' => '30', 'desc' => '真实姓名'),
                 'mobile' => array('name' => 'mobile', 'regex' => "/^1[34578]\d{9}$/", 'desc' => '手机号码'),
@@ -41,6 +41,9 @@ class Member extends Api {
                 'real_name' => array('name' => 'real_name', 'min' => 1, 'max' => '30', 'desc' => '真实姓名'),
                 'mobile' => array('name' => 'mobile', 'regex' => "/^1[34578]\d{9}$/", 'desc' => '手机号码'),
                 'gender' => array('name' => 'gender', 'type' => 'enum', 'range' => array('0', '1', '-1')),
+            ),           
+            'resetPwd' => array(
+                'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
             ),            
             'delete' => array(
                 'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
@@ -141,6 +144,27 @@ class Member extends Api {
         $code = $domain->update($this->id, $newData);
 
         $rs['code'] = $code;
+        return $rs;
+    }
+
+    /**
+     * 重置会员密码
+     * @desc 根据ID重置会员密码
+     * @return int    code 重置会员密码的结果，1表示成功，0表示无更新，false表示失败
+     * @return string pwd  重置后的密码
+     */
+     public function resetPwd() {
+        $rs = array();
+
+        $newData = array(
+            'pwd' => 'denglu',
+        );
+
+        $domain = new Domain();
+        $code = $domain->resetPwd($this->id, $newData);
+
+        $rs['code'] = $code;
+        $rs['pwd'] = $newData['pwd'];
         return $rs;
     }
 

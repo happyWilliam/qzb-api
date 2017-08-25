@@ -8,6 +8,23 @@ class Member {
 
     public function login($params) {
         $model = new Model();
+        $user = $model->getMemberByLoginName($params['login_name']); 
+        if(count($user) <= 0) {
+            $user = $model->getMemberByMobile($params['login_name']);
+        } 
+        
+        if(count($user) <= 0) {
+            throw new BadRequestException('用户 '.$params['login_name'].' 还未注册', 1);
+        }
+        
+        if(count($user) > 0 && $user['0']['status'] == '0') {
+            throw new BadRequestException('用户 '.$params['login_name'].' 已经被停用', 1);
+        }        
+
+        $user = $model->login($params);
+        if(count($user) <= 0) {
+            throw new BadRequestException('用户名或密码错误', 1);
+        }
         return $model->login($params);
     }
 
@@ -39,6 +56,11 @@ class Member {
         if(count($members) > 1 || (count($members) == 1 && $members['0']['id'] != $id)) {            
             throw new BadRequestException('手机号码 '.$newData['mobile'].' 已经被注册', 1);
         }
+        return $model->update($id, $newData);
+    }
+
+    public function resetPwd($id, $newData) {
+        $model = new Model(); 
         return $model->update($id, $newData);
     }
 

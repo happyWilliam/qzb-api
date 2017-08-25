@@ -19,7 +19,6 @@ class User extends Api {
             ),
             'add' => array(
                 'login_name' => array('name' => 'login_name', 'require' => true, 'min' => 1, 'max' => '30', 'desc' => '登录用户名'),
-                'pwd' => array('name' => 'pwd', 'require' => true, 'min' => 1, 'max' => '30', 'desc' => '密码'),
                 'real_name' => array('name' => 'real_name', 'min' => 1, 'max' => '30', 'desc' => '真实姓名'),
                 'mobile' => array('name' => 'mobile', 'regex' => "/^1[34578]\d{9}$/", 'desc' => '手机号码'),
                 'gender' => array('name' => 'gender', 'require' => true, 'type' => 'enum', 'range' => array('0', '1', '-1'), 'desc' => '性别')
@@ -33,15 +32,16 @@ class User extends Api {
                 'status' => array('name' => 'status', 'type' => 'int', 'desc' => '管理员状态'),
                 'login_name' => array('name' => 'login_namestatus', 'desc' => '登录用户名，模糊查询'),
                 'real_name' => array('name' => 'real_name', 'desc' => '真实姓名，模糊查询'),
-                'balance' => array('name' => 'balance', 'desc' => '余额小于值'),
             ),
             'update' => array(
                 'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
                 'login_name' => array('name' => 'login_name', 'require' => true, 'min' => 1, 'max' => '30', 'desc' => '登录用户名'),
                 'real_name' => array('name' => 'real_name', 'min' => 1, 'max' => '30', 'desc' => '真实姓名'),
                 'mobile' => array('name' => 'mobile', 'regex' => "/^1[34578]\d{9}$/", 'desc' => '手机号码'),
-                'gender' => array('name' => 'gender', 'type' => 'enum', 'range' => array('0', '1', '-1')),
-            ),            
+            ), 
+            'resetPwd' => array(
+                'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
+            ),                
             'delete' => array(
                 'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
             ),
@@ -116,6 +116,27 @@ class User extends Api {
     }
 
     /**
+     * 重置管理员密码
+     * @desc 根据ID重置管理员密码
+     * @return int    code 重置管理员密码的结果，1表示成功，0表示无更新，false表示失败
+     * @return string pwd  重置后的密码
+     */
+     public function resetPwd() {
+        $rs = array();
+
+        $newData = array(
+            'pwd' => 'sq123456',
+        );
+
+        $domain = new Domain();
+        $code = $domain->resetPwd($this->id, $newData);
+
+        $rs['code'] = $code;
+        $rs['pwd'] = $newData['pwd'];
+        return $rs;
+    }
+
+    /**
      * 删除管理员
      * @desc 根据ID删除管理员
      * @return int code 删除的结果，1表示成功，0表示无更新，false表示失败
@@ -179,12 +200,12 @@ class User extends Api {
     public function getList() {
         $rs = array();       
         $domain = new Domain();
-        $list = $domain->getList($this->status, $this->pageNo, $this->pageSize, $this->login_name, $this->real_name, $this->balance);
+        $list = $domain->getList($this->status, $this->pageNo, $this->pageSize, $this->login_name, $this->real_name);
 
         $rs['items'] = $list['items'];
         $rs['total'] = $list['total'];
-        $rs['pageNo'] = $this->page;
-        $rs['pageSize'] = $this->perpage;
+        $rs['pageNo'] = $this->pageNo;
+        $rs['pageSize'] = $this->pageSize;
 
         return $rs;
     }
