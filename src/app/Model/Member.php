@@ -74,4 +74,18 @@ class Member extends NotORM {
 
         return intval($total);
     }
+
+    public function getMemberByLoginName($login_name) { 
+        return $this->getORM()
+            ->select('id, login_name, real_name, mobile, balance, gender, status, create_time')
+            ->where('login_name', $login_name)
+            ->fetchAll();      
+    }
+
+    public function getMemberByMobile($mobile) {
+        return $this->getORM()
+            ->select('id, login_name, real_name, mobile, balance, gender, status, create_time')
+            ->where('mobile', $mobile)
+            ->fetchAll();
+    }
 }
