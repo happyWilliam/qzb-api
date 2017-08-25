@@ -49,7 +49,6 @@ class Member {
 
     public function getList($status, $pageNo, $pageSize, $login_name, $real_name, $balance) {
         $rs = array('items' => array(), 'total' => 0);
-
         $model = new Model();
         $items = $model->getListItems($status, $pageNo, $pageSize, $login_name, $real_name, $balance);
         $total = $model->getListTotal($status, $login_name, $real_name, $balance);

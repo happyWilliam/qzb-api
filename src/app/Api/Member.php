@@ -201,22 +201,6 @@ class Member extends Api {
         return $rs;
     }
 
-    
-
-    /**
-     * 删除数据
-     * @desc 根据ID删除数据库中的一条纪录数据
-     * @return int code 删除的结果，1表示成功，0表示失败
-     */
-    // public function delete() {
-    //     $rs = array();
-
-    //     $domain = new Domain();
-    //     $code = $domain->delete($this->id);
-
-    //     $rs['code'] = $code;
-    //     return $rs;
-    // }
 
     /**
      * 获取分页列表数据
@@ -233,8 +217,8 @@ class Member extends Api {
 
         $rs['items'] = $list['items'];
         $rs['total'] = $list['total'];
-        $rs['pageNo'] = $this->page;
-        $rs['pageSize'] = $this->perpage;
+        $rs['pageNo'] = $this->pageNo;
+        $rs['pageSize'] = $this->pageSize;
 
         return $rs;
     }
