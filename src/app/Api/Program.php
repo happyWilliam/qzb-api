@@ -2,26 +2,27 @@
 namespace App\Api;
 
 use PhalApi\Api;
-use App\Domain\User as Domain;
+use App\Domain\Program as Domain;
 
 /**
  * 管理员管理操作
  * 
  */
 
-class User extends Api {
+class Program extends Api {
 
     public function getRules() {
         return array(
-            'login' => array(
-                'login_name' => array('name' => 'login_name', 'require' => true, 'min' => 1, 'max' => 30, 'desc' => '登录用户名或手机号码'),
-                'pwd' => array('name' => 'pwd', 'require' => true, 'min' => 1, 'max' => 30, 'desc' => '登录密码'),
-            ),
             'add' => array(
-                'login_name' => array('name' => 'login_name', 'require' => true, 'min' => 1, 'max' => '30', 'desc' => '登录用户名'),
-                'real_name' => array('name' => 'real_name', 'min' => 1, 'max' => '30', 'desc' => '真实姓名'),
-                'mobile' => array('name' => 'mobile', 'regex' => "/^1[34578]\d{9}$/", 'desc' => '手机号码'),
-                'gender' => array('name' => 'gender', 'require' => true, 'type' => 'enum', 'range' => array('0', '1', '-1'), 'desc' => '性别')
+                'name' => array('name' => 'login_name', 'require' => true, 'min' => 1, 'max' => '100', 'desc' => '活动名称'),
+                'description' => array('name' => 'description', 'min' => 1, 'max' => '300', 'desc' => '活动描述'),
+                'imgs' => array('name' => 'imgs', 'desc' => '活动图片'),
+                'start_time' => array('name' => 'start_time', 'require' => true, 'type' => 'date', 'desc' => '活动开始时间'),
+                'end_time' => array('name' => 'end_time', 'require' => true, 'type' => 'date', 'desc' => '活动结束时间'),
+                'address' => array('name' => 'address', 'require' => true, 'desc' => '活动地址'),
+                'fee_type' => array('name' => 'fee_type', 'require' => true, 'type' => 'enum', 'range' => array('1', '2', '3'), 'desc' => '费用类型，1-会员制，2-AA制，3-其它'),
+                'status' => array('name' => 'status', 'require' => true, 'desc' => '活动状态，0-活动已取消，1-活动报名中，2-活动报名截止，3-活动费用已核对，4-活动已结束'),
+                'charge_user_id' => array('name' => 'charge_user_id', 'require' => true, 'min' => 1, 'desc' => '活动组织负责人ID'),                
             ),
             'get' => array(
                 'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
@@ -38,56 +39,32 @@ class User extends Api {
                 'login_name' => array('name' => 'login_name', 'require' => true, 'min' => 1, 'max' => '30', 'desc' => '登录用户名'),
                 'real_name' => array('name' => 'real_name', 'min' => 1, 'max' => '30', 'desc' => '真实姓名'),
                 'mobile' => array('name' => 'mobile', 'regex' => "/^1[34578]\d{9}$/", 'desc' => '手机号码'),
-            ), 
-            'resetPwd' => array(
-                'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
-            ),                
-            'delete' => array(
-                'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
-            ),
-            'stop' => array(
-                'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
-            ),
-            'active' => array(
+            ),                 
+            'cancel' => array(
                 'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
             ),
         );
     }
 
     /**
-     * 管理员登录
-     * @desc 管理员登录
-     * @return int      id          管理员ID
-     * @return string   login_name  登录名
-     * @return string   real_name   真实姓名
-     * @return string   mobile      手机号码
-     * @return int      status      状态 1-启用，0-停用
-     */
-     public function login() {
-        $domain = new Domain();
-        $params = array(
-            'login_name' => $this->login_name,
-            'pwd' => $this->pwd,
-            'mobile' => $this->login_name
-        );
-        $data = $domain->login($params);
-
-        return $data;
-    }
-
-    /**
-     * 新增管理员
-     * @desc 新增管理员
-     * @return int      id          管理员ID
+     * 新增活动
+     * @desc 新增活动
+     * @return int      id          活动ID
      */
     public function add() {
         $newData = array(
-            'login_name' => $this->login_name,
-            'real_name' => $this->real_name,
-            'mobile' => $this->mobile,
+            'name' => $this->name,
+            'description' => $this->description,
+            'imgs' => $this->imgs,
+            'start_time' => $this->start_time,
+            'end_time' => $this->end_time,
+            'address' => $this->address,
+            'fee_type' => $this->fee_type,
+            'status' => $this->status,
+            'charge_user_id' => $this->charge_user_id,
         );
         $domain = new Domain();
-        return $domain->add($newData); 
+        return $domain->add($newData);
     }
 
     /**

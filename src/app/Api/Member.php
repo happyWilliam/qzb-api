@@ -91,8 +91,6 @@ class Member extends Api {
      * @return int      id          会员ID
      */
     public function register() {
-        $rs = array();
-
         $newData = array(
             'login_name' => $this->login_name,
             'pwd' => $this->pwd,
@@ -102,10 +100,7 @@ class Member extends Api {
         );
 
         $domain = new Domain();
-        $id = $domain->register($newData);
-
-        $rs['id'] = $id;
-        return $rs; 
+        return $domain->register($newData);
     }
 
     /**

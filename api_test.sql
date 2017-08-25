@@ -1,7 +1,7 @@
-##管理者登录##
+##管理者登录##----ok
 SELECT t.login_name, t.`pwd` FROM `user` as t WHERE t.`status` = 1;
 
-##会员注册##
+##会员注册##---ok
 #1.校验登录名是否被注册
 SELECT COUNT(id) FROM member WHERE login_name = 'lyj';
 #2.校验手机号码是否被注册
