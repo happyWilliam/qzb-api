@@ -5,7 +5,7 @@ use PhalApi\Api;
 use App\Domain\Program as Domain;
 
 /**
- * 管理员管理操作
+ * 活动管理操作
  * 
  */
 
@@ -14,7 +14,7 @@ class Program extends Api {
     public function getRules() {
         return array(
             'add' => array(
-                'name' => array('name' => 'login_name', 'require' => true, 'min' => 1, 'max' => '100', 'desc' => '活动名称'),
+                'name' => array('name' => 'name', 'require' => true, 'min' => 1, 'max' => '100', 'desc' => '活动名称'),
                 'description' => array('name' => 'description', 'min' => 1, 'max' => '300', 'desc' => '活动描述'),
                 'imgs' => array('name' => 'imgs', 'desc' => '活动图片'),
                 'start_time' => array('name' => 'start_time', 'require' => true, 'type' => 'date', 'desc' => '活动开始时间'),
@@ -30,15 +30,23 @@ class Program extends Api {
             'getList' => array(
                 'pageNo' => array('name' => 'pageNo', 'type' => 'int', 'min' => 1, 'default' => 1, 'desc' => '第几页'),
                 'pageSize' => array('name' => 'pageSize', 'type' => 'int', 'min' => 1, 'default' => 10, 'desc' => '分页数量，默认10条'),
-                'status' => array('name' => 'status', 'type' => 'int', 'desc' => '管理员状态'),
-                'login_name' => array('name' => 'login_namestatus', 'desc' => '登录用户名，模糊查询'),
-                'real_name' => array('name' => 'real_name', 'desc' => '真实姓名，模糊查询'),
+                'status' => array('name' => 'status', 'type' => 'int', 'desc' => '活动状态'),
+                'name' => array('name' => 'login_namestatus', 'desc' => '活动名称'),
+                'start_time' => array('name' => 'start_time', 'type' => 'date', 'desc' => '查询时间开始时间'),
+                'end_time' => array('name' => 'end_time', 'type' => 'date', 'desc' => '查询时间结束时间'),
             ),
+
+            
             'update' => array(
                 'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
-                'login_name' => array('name' => 'login_name', 'require' => true, 'min' => 1, 'max' => '30', 'desc' => '登录用户名'),
-                'real_name' => array('name' => 'real_name', 'min' => 1, 'max' => '30', 'desc' => '真实姓名'),
-                'mobile' => array('name' => 'mobile', 'regex' => "/^1[34578]\d{9}$/", 'desc' => '手机号码'),
+                'name' => array('name' => 'name', 'require' => true, 'min' => 1, 'max' => '100', 'desc' => '活动名称'),
+                'description' => array('name' => 'description', 'min' => 1, 'max' => '300', 'desc' => '活动描述'),
+                'imgs' => array('name' => 'imgs', 'desc' => '活动图片'),
+                'start_time' => array('name' => 'start_time', 'require' => true, 'type' => 'date', 'desc' => '活动开始时间'),
+                'end_time' => array('name' => 'end_time', 'require' => true, 'type' => 'date', 'desc' => '活动结束时间'),
+                'address' => array('name' => 'address', 'require' => true, 'desc' => '活动地址'),
+                'fee_type' => array('name' => 'fee_type', 'require' => true, 'type' => 'enum', 'range' => array('1', '2', '3'), 'desc' => '费用类型，1-会员制，2-AA制，3-其它'),
+                'charge_user_id' => array('name' => 'charge_user_id', 'require' => true, 'min' => 1, 'desc' => '活动组织负责人ID'),              
             ),                 
             'cancel' => array(
                 'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
@@ -76,9 +84,14 @@ class Program extends Api {
         $rs = array();
 
         $newData = array(
-            'login_name' => $this->login_name,
-            'real_name' => $this->real_name,
-            'mobile' => $this->mobile
+            'name' => $this->name,
+            'description' => $this->description,
+            'imgs' => $this->imgs,
+            'start_time' => $this->start_time,
+            'end_time' => $this->end_time,
+            'address' => $this->address,
+            'fee_type' => $this->fee_type,
+            'charge_user_id' => $this->charge_user_id,
         );
 
         $domain = new Domain();
@@ -88,26 +101,6 @@ class Program extends Api {
         return $rs;
     }
 
-    /**
-     * 重置管理员密码
-     * @desc 根据ID重置管理员密码
-     * @return int    code 重置管理员密码的结果，1表示成功，0表示无更新，false表示失败
-     * @return string pwd  重置后的密码
-     */
-     public function resetPwd() {
-        $rs = array();
-
-        $newData = array(
-            'pwd' => 'sq123456',
-        );
-
-        $domain = new Domain();
-        $code = $domain->resetPwd($this->id, $newData);
-
-        $rs['code'] = $code;
-        $rs['pwd'] = $newData['pwd'];
-        return $rs;
-    }
 
     /**
      * 删除管理员
@@ -173,7 +166,7 @@ class Program extends Api {
     public function getList() {
         $rs = array();       
         $domain = new Domain();
-        $list = $domain->getList($this->status, $this->pageNo, $this->pageSize, $this->login_name, $this->real_name);
+        $list = $domain->getList($this->pageNo, $this->pageSize, $this->status, $this->name, $this->start_time, $this->end_time);
 
         $rs['items'] = $list['items'];
         $rs['total'] = $list['total'];

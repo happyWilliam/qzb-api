@@ -44,77 +44,89 @@ class Program extends NotORM {
         return $rs;
     }
 
-    public function getListItems($status, $pageNo, $pageSize, $login_name, $real_name) {
+    public function getListItems($pageNo, $pageSize, $status, $name, $start_time, $end_time) {
         
-        $sql = "SELECT id, login_name, real_name, mobile, status, create_time FROM user";
-        \PhalApi\DI()->response->setDebug('status', $status);
-        \PhalApi\DI()->response->setDebug('login_name', $login_name);
-        \PhalApi\DI()->response->setDebug('real_name', $real_name);
+        $sql = "SELECT id, name, start_time, end_time, address, fee_type, status, field_num, create_time FROM program";
+        
         if($status !== null) {
             $sql .= " WHERE status = :status";
         }
 
         // 为了解决like语句的字符串拼接，费了老大劲儿了~
-        if($login_name !== null) {            
+        if($name !== null) {            
             strpos($sql, 'WHERE') ? 
-                ($sql .= " AND login_name LIKE CONCAT('%', :login_name, '%')") : 
-                ($sql .= " WHERE login_name LIKE CONCAT('%', :login_name, '%')");
+                ($sql .= " AND name LIKE CONCAT('%', :name, '%')") : 
+                ($sql .= " WHERE name LIKE CONCAT('%', :name, '%')");
         }
-        if($real_name !== null) {
+        if($start_time !== null) {
             strpos($sql, 'WHERE') ? 
-            ($sql .= " AND real_name LIKE CONCAT('%', :real_name, '%')") : 
-            ($sql .= " WHERE real_name LIKE CONCAT('%', :real_name, '%')");
+            ($sql .= " AND start_time >= :start_time") : 
+            ($sql .= " WHERE start_time >= :start_time");
         }
-        $sql .= " ORDER BY create_time DESC LIMIT ".($pageNo - 1) * $pageSize.",".$pageSize.";";
+
+        if($end_time !== null) {
+            strpos($sql, 'WHERE') ? 
+            ($sql .= " AND end_time <= :end_time") : 
+            ($sql .= " WHERE end_time <= :end_time");
+        }
+        $sql .= " ORDER BY start_time ASC LIMIT ".($pageNo - 1) * $pageSize.",".$pageSize.";";
         $params = array(
             ':status' => $status,
-            ':login_name' => $login_name,
-            ':real_name' => $real_name,
+            ':name' => $name,
+            ':start_time' => $start_time,
+            ':end_time' => $end_time,
         ); 
 
         return $this->getORM()->queryAll($sql, $params);
     }
 
-    public function getListTotal($status, $login_name, $real_name) {
-        $sql = "SELECT id FROM user";
+    public function getListTotal($pageNo, $pageSize, $status, $name, $start_time, $end_time) {
+        $sql = "SELECT id FROM program";
         
         if($status !== null) {
             $sql .= " WHERE status = :status";
         }
 
         // 为了解决like语句的字符串拼接，费了老大劲儿了~
-        if($login_name !== null) {            
+        if($name !== null) {            
             strpos($sql, 'WHERE') ? 
-                ($sql .= " AND login_name LIKE CONCAT('%', :login_name, '%')") : 
-                ($sql .= " WHERE login_name LIKE CONCAT('%', :login_name, '%')");
+                ($sql .= " AND name LIKE CONCAT('%', :name, '%')") : 
+                ($sql .= " WHERE name LIKE CONCAT('%', :name, '%')");
         }
-        if($real_name !== null) {
+        if($start_time !== null) {
             strpos($sql, 'WHERE') ? 
-            ($sql .= " AND real_name LIKE CONCAT('%', :real_name, '%')") : 
-            ($sql .= " WHERE real_name LIKE CONCAT('%', :real_name, '%')");
+            ($sql .= " AND start_time >= :start_time") : 
+            ($sql .= " WHERE start_time >= :start_time");
         }
+
+        if($end_time !== null) {
+            strpos($sql, 'WHERE') ? 
+            ($sql .= " AND end_time <= :end_time") : 
+            ($sql .= " WHERE end_time <= :end_time");
+        }
+        $params = array(
+            ':status' => $status,
+            ':name' => $name,
+            ':start_time' => $start_time,
+            ':end_time' => $end_time,
+        ); 
         
         $sql .= ";";
         $params = array(
             ':status' => $status,
-            ':login_name' => $login_name,
-            ':real_name' => $real_name,
+            ':name' => $name,
+            ':start_time' => $start_time,
+            ':end_time' => $end_time,
         ); 
+
         $total = count($this->getORM()->queryAll($sql, $params));
         return intval($total);
     }
 
-    public function getUserByLoginName($login_name) { 
+    public function getProgramsByStartTime($start_time) {
         return $this->getORM()
-            ->select('id, login_name, real_name, mobile, status, create_time')
-            ->where('login_name', $login_name)
-            ->fetchAll();      
-    }
-
-    public function getUserByMobile($mobile) {
-        return $this->getORM()
-            ->select('id, login_name, real_name, mobile, status, create_time')
-            ->where('mobile', $mobile)
+            ->select('id, name, start_time, end_time, address')
+            ->where('start_time', $start_time)
             ->fetchAll();
     }
 }

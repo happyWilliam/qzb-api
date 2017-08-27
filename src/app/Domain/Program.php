@@ -8,13 +8,10 @@ class Program {
 
     public function add($newData) {
         $model = new Model();
-        $users = $model->getUserByLoginName($newData['login_name']);          
-        if(count($users) > 0) {
-            throw new BadRequestException('登录用户名 '.$newData['login_name'].' 已经被注册', 1);
-        }
-        $users = $model->getUserByMobile($newData['mobile']);
-        if(count($users) > 0) {            
-            throw new BadRequestException('手机号码 '.$newData['mobile'].' 已经被注册', 1);
+
+        $programs = $model->getProgramsByStartTime($newData['start_time']);
+        if(count($programs) > 0) {
+            throw new BadRequestException($newData['start_time'].'已经有活动：'.$programs['0']['name'], 1);
         }
         $newData['create_time'] = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
         return $model->add($newData);
@@ -22,32 +19,19 @@ class Program {
 
     public function update($id, $newData) {
         $model = new Model();        
-        $users = $model->getUserByLoginName($newData['login_name']);
-
-        // \PhalApi\DI()->response->setDebug('users', $users);
-        
-        if(count($users) > 1 || (count($users) == 1 && $users['0']['id'] != $id)) {
-            throw new BadRequestException('登录用户名 '.$newData['login_name'].' 已经被注册', 1);
-        }
-        $users = $model->getUserByMobile($newData['mobile']);
-
-        if(count($users) > 1 || (count($users) == 1 && $users['0']['id'] != $id)) {            
-            throw new BadRequestException('手机号码 '.$newData['mobile'].' 已经被注册', 1);
+        $programs = $model->getProgramsByStartTime($newData['start_time']);        
+        if(count($programs) > 1 || (count($programs) == 1 && $programs['0']['id'] != $id)) {
+            throw new BadRequestException($newData['start_time'].'已经有活动：'.$programs['0']['name'], 1);
         }
         return $model->update($id, $newData);
     }
 
-    public function resetPwd($id, $newData) {
-        $model = new Model(); 
-        return $model->update($id, $newData);
-    }
-
-    public function getList($status, $pageNo, $pageSize, $login_name, $real_name) {
+    public function getList($pageNo, $pageSize, $status, $name, $start_time, $end_time) {
         $rs = array('items' => array(), 'total' => 0);
 
         $model = new Model();
-        $items = $model->getListItems($status, $pageNo, $pageSize, $login_name, $real_name);
-        $total = $model->getListTotal($status, $login_name, $real_name);
+        $items = $model->getListItems($pageNo, $pageSize, $status, $name, $start_time, $end_time);
+        $total = $model->getListTotal($pageNo, $pageSize, $status, $name, $start_time, $end_time);
 
         $rs['items'] = $items;
         $rs['total'] = $total;
