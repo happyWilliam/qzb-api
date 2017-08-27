@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2017-08-24 09:40:19
+Date: 2017-08-27 23:46:26
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -121,13 +121,16 @@ CREATE TABLE `program` (
   `field_num` tinyint(2) NOT NULL DEFAULT '1',
   `charge_user_id` tinyint(3) NOT NULL,
   `fee_type_id` tinyint(2) NOT NULL DEFAULT '1',
+  `create_time` datetime NOT NULL,
+  `creator_id` tinyint(3) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of program
 -- ----------------------------
-INSERT INTO `program` VALUES ('1', '2017-08-19羽毛球活动', '2017-08-19羽毛球活动', '1,2,3', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1877976885,3975167324&fm=26&gp=0.jpg', '2017-08-19 10:00:00', '2017-08-19 12:00:00', '深圳市龙华区民治民兴工业区民治羽毛球馆', 'fee_type_1', '1', '1', '1', '1');
+INSERT INTO `program` VALUES ('1', '2017-08-19羽毛球活动', '2017-08-19羽毛球活动', '1,2,3', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1877976885,3975167324&fm=26&gp=0.jpg', '2017-08-19 10:00:00', '2017-08-19 12:00:00', '深圳市龙华区民治民兴工业区民治羽毛球馆', 'fee_type_1', '1', '1', '1', '1', '0000-00-00 00:00:00', '0');
+INSERT INTO `program` VALUES ('2', '2017-09-02羽毛球活动22', '2017-09-02羽毛球活动22', null, null, '2017-08-26 10:00:00', '2017-08-26 12:00:00', '深圳市龙华区民治民兴工业区民治羽毛球馆', '1', '1', '1', '1', '1', '2017-08-27 20:42:30', '1');
 
 -- ----------------------------
 -- Table structure for user
