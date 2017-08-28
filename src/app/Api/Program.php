@@ -25,12 +25,14 @@ class Program extends Api {
                 'charge_user_id' => array('name' => 'charge_user_id', 'require' => true, 'min' => 1, 'desc' => '活动组织负责人ID'),                
             ),
             'signUp' => array(
-                'name' => array('name' => 'name', 'require' => true, 'min' => 1, 'max' => '100', 'desc' => '活动名称'),
-                'mobile' => array('name' => 'mobile', 'regex' => "/^1[34578]\d{9}$/", 'desc' => '手机号码'),
-                'sign_member_id' => array('name' => 'sign_member_id', 'require' => true, 'min' => 1, 'desc' => '主报名人ID'),
-                'program_id' => array('name' => 'program_id', 'require' => true, 'min' => 1, 'desc' => '活动ID'),
-                'gender' => array('name' => 'gender', 'require' => true, 'type' => 'enum', 'range' => array('0', '1', '-1'), 'desc' => '性别'),
-                'member_id' => array('name' => 'member_id', 'require' => true, 'min' => 1, 'desc' => '参与活动者的会员ID，如果是外带人员，这个ID为空'),            
+                'participants' => array(
+                    'name' => array('name' => 'name', 'require' => true, 'min' => 1, 'max' => '100', 'desc' => '活动名称'),
+                    'mobile' => array('name' => 'mobile', 'regex' => "/^1[34578]\d{9}$/", 'desc' => '手机号码'),
+                    'sign_member_id' => array('name' => 'sign_member_id', 'require' => true, 'min' => 1, 'desc' => '主报名人ID'),
+                    'program_id' => array('name' => 'program_id', 'require' => true, 'min' => 1, 'desc' => '活动ID'),
+                    'gender' => array('name' => 'gender', 'require' => true, 'type' => 'enum', 'range' => array('0', '1', '-1'), 'desc' => '性别'),
+                    'member_id' => array('name' => 'member_id', 'require' => true, 'min' => 1, 'desc' => '参与活动者的会员ID，如果是外带人员，这个ID为空'),            
+                )
             ),
             'get' => array(
                 'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
@@ -118,17 +120,10 @@ class Program extends Api {
      * @desc 报名活动
      * @return int      id          活动ID
      */
-     public function signUp() {
-        $newData = array(
-            'name' => $this->name,
-            'mobile' => $this->mobile,
-            'sign_member_id' => $this->sign_member_id,
-            'program_id' => $this->program_id,
-            'gender' => $this->gender,
-            'member_id' => $this->member_id,
-        );
+     public function signUp($participants) {
+         
         $domain = new Domain();
-        return $domain->signUp($newData);
+        return $domain->signUp($participants);
     }
 
     /**
