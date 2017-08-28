@@ -10,7 +10,7 @@ SELECT COUNT(id) FROM member WHERE mobile = '13895666698';
 INSERT INTO member(login_name, pwd, real_name, mobile, gender) VALUES('lyj', '013895666698', '李玉娟', '13895666698', '0');
 
 ##管理者发布活动##
-#1.校验同一时间是否发布过活动
+#1.校验同一时间是否发布过活动--ok
 SELECT COUNT(id) FROM program WHERE start_time = '2017-08-19 10:00:00';
 INSERT INTO program(name, description, imgs, start_time, end_time, address, fee_type, status, charge_user_id) 
 	VALUES(
@@ -25,7 +25,7 @@ INSERT INTO program(name, description, imgs, start_time, end_time, address, fee_
 		'program_status_1'
 	);
 
-##会员参加活动##
+##会员参加活动##--ok
 #1.查询所有可以报名的活动
 SELECT
 	t.id,
@@ -84,7 +84,7 @@ DELETE FROM participant WHERE id = '2';
 #participant_ids数量-field_num*max_num>=4
 UPDATE program AS t1 set t1.field_num = '2' WHERE t1.id = '1';
 
-##截止报名##
+##截止报名##---ok
 UPDATE program AS t1 set t1.`status` = '2' WHERE t1.id = '1';
 
 ##核对活动账务##
@@ -99,10 +99,10 @@ INSERT INTO fee_records(member_id, type, operator_id, operate_time, last_balance
 	'100'
 );
 
-##活动结束
+##活动结束---ok
 UPDATE program AS t1 set t1.`status` = '4' WHERE t1.id = '1';
 
-##取消活动##
+##取消活动##---ok
 UPDATE program AS t1 set t1.`status` = '0' WHERE t1.id = '1';
 
 ##会员充值##

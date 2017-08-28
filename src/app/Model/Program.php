@@ -1,6 +1,5 @@
 <?php
 namespace App\Model;
-
 use PhalApi\Model\NotORMModel as NotORM;
 
 /**
@@ -30,23 +29,19 @@ class Program extends NotORM {
     }
 
     public function get($id, $fields = '*') {
-        $needFields = is_array($fields) ? implode(',', $fields) : $fields;
-        $notorm = $this->getORM($id);
-
-        $table = $this->getTableName($id);
-
-        $rs = $notorm->select($needFields)
-            ->where($this->getTableKey($table), $id)
-            ->fetch();
-
-        $this->parseExtData($rs);
-
-        return $rs;
+        $sql = "SELECT t1.id, t1.name, t1.description, t1.imgs, t1.start_time, t1.end_time, t1.address, t1.fee_type_id, t1.status, t1.field_num, t1.charge_user_id, t1.participant_ids";
+        $sql .= " FROM program AS t1, fee_type t2, user AS t3";
+        $sql .= " WHERE t1.id = :id AND t1.charge_user_id = t3.id AND t1.fee_type_id = t2.id;";
+        $params = array(
+            ':id' => $id,
+        ); 
+        
+        return $this->getORM()->queryAll($sql, $params)['0'];
     }
 
     public function getListItems($pageNo, $pageSize, $status, $name, $start_time, $end_time) {
         
-        $sql = "SELECT id, name, start_time, end_time, address, fee_type, status, field_num, create_time FROM program";
+        $sql = "SELECT id, name, start_time, end_time, address, fee_type, status, field_num FROM program";
         
         if($status !== null) {
             $sql .= " WHERE status = :status";
@@ -128,5 +123,5 @@ class Program extends NotORM {
             ->select('id, name, start_time, end_time, address')
             ->where('start_time', $start_time)
             ->fetchAll();
-    }
+    }     
 }

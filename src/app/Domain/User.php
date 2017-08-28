@@ -64,6 +64,12 @@ class User {
         return $model->update($id, $newData);
     }
 
+    public function get($id) {
+        $model = new Model();
+        return $model->get($id, $fields);
+    }
+
+
     public function getList($status, $pageNo, $pageSize, $login_name, $real_name) {
         $rs = array('items' => array(), 'total' => 0);
 

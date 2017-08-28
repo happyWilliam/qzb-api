@@ -176,7 +176,7 @@ class Member extends Api {
         );
 
         $domain = new Domain();
-        $code = $domain->update($this->id, $newData);
+        $code = $domain->delete($this->id, $newData);
 
         $rs['code'] = $code;
         return $rs;
@@ -195,7 +195,7 @@ class Member extends Api {
         );
 
         $domain = new Domain();
-        $code = $domain->update($this->id, $newData);
+        $code = $domain->stop($this->id, $newData);
 
         $rs['code'] = $code;
         return $rs;
@@ -214,7 +214,7 @@ class Member extends Api {
         );
 
         $domain = new Domain();
-        $code = $domain->update($this->id, $newData);
+        $code = $domain->active($this->id, $newData);
 
         $rs['code'] = $code;
         return $rs;

@@ -64,6 +64,21 @@ class Member {
         return $model->update($id, $newData);
     }
 
+    public function active($id, $newData) {
+        $model = new Model(); 
+        return $model->update($id, $newData);
+    }
+
+    public function stop($id, $newData) {
+        $model = new Model(); 
+        return $model->update($id, $newData);
+    }
+
+    public function delete($id, $newData) {
+        $model = new Model(); 
+        return $model->update($id, $newData);
+    }
+
     public function get($id, $fields) {
         $model = new Model();
         return $model->get($id, $fields);
