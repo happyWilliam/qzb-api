@@ -41,80 +41,46 @@ class Program extends NotORM {
 
     public function getListItems($pageNo, $pageSize, $status, $name, $start_time, $end_time) {
         
-        $sql = "SELECT id, name, start_time, end_time, address, fee_type, status, field_num FROM program";
-        
+        $condition = array();
         if($status !== null) {
-            $sql .= " WHERE status = :status";
+            $condition['status'] = $status;
         }
-
-        // 为了解决like语句的字符串拼接，费了老大劲儿了~
-        if($name !== null) {            
-            strpos($sql, 'WHERE') ? 
-                ($sql .= " AND name LIKE CONCAT('%', :name, '%')") : 
-                ($sql .= " WHERE name LIKE CONCAT('%', :name, '%')");
+        if($name != null) {
+            $condition['name LIKE ?'] = '%'.$name.'%';
         }
-        if($start_time !== null) {
-            strpos($sql, 'WHERE') ? 
-            ($sql .= " AND start_time >= :start_time") : 
-            ($sql .= " WHERE start_time >= :start_time");
+        if($start_time != null) {
+            $condition['start_time >= ?'] = $start_time;
         }
-
-        if($end_time !== null) {
-            strpos($sql, 'WHERE') ? 
-            ($sql .= " AND end_time <= :end_time") : 
-            ($sql .= " WHERE end_time <= :end_time");
+        if($end_time != null) {
+            $condition['end_time <= ?'] = $end_time;
         }
-        $sql .= " ORDER BY start_time ASC LIMIT ".($pageNo - 1) * $pageSize.",".$pageSize.";";
-        $params = array(
-            ':status' => $status,
-            ':name' => $name,
-            ':start_time' => $start_time,
-            ':end_time' => $end_time,
-        ); 
-
-        return $this->getORM()->queryAll($sql, $params);
+        return $this->getORM()
+            ->select('id, name, start_time, end_time, address, fee_type, status, field_num')
+            ->where($condition)
+            ->order('create_time DESC')
+            ->limit(($pageNo - 1) * $pageSize, $pageSize)
+            ->fetchAll();
     }
 
     public function getListTotal($pageNo, $pageSize, $status, $name, $start_time, $end_time) {
-        $sql = "SELECT id FROM program";
-        
+        $condition = array();
         if($status !== null) {
-            $sql .= " WHERE status = :status";
+            $condition['status'] = $status;
+        }
+        if($name != null) {
+            $condition['name LIKE ?'] = '%'.$name.'%';
+        }
+        if($start_time != null) {
+            $condition['start_time >= ?'] = $start_time;
+        }
+        if($end_time != null) {
+            $condition['end_time <= ?'] = $end_time;
         }
 
-        // 为了解决like语句的字符串拼接，费了老大劲儿了~
-        if($name !== null) {            
-            strpos($sql, 'WHERE') ? 
-                ($sql .= " AND name LIKE CONCAT('%', :name, '%')") : 
-                ($sql .= " WHERE name LIKE CONCAT('%', :name, '%')");
-        }
-        if($start_time !== null) {
-            strpos($sql, 'WHERE') ? 
-            ($sql .= " AND start_time >= :start_time") : 
-            ($sql .= " WHERE start_time >= :start_time");
-        }
+        $total = $this->getORM()
+            ->where($condition)
+            ->count('id');
 
-        if($end_time !== null) {
-            strpos($sql, 'WHERE') ? 
-            ($sql .= " AND end_time <= :end_time") : 
-            ($sql .= " WHERE end_time <= :end_time");
-        }
-        $params = array(
-            ':status' => $status,
-            ':name' => $name,
-            ':start_time' => $start_time,
-            ':end_time' => $end_time,
-        ); 
-        
-        $sql .= ";";
-        $params = array(
-            ':status' => $status,
-            ':name' => $name,
-            ':start_time' => $start_time,
-            ':end_time' => $end_time,
-        ); 
-
-        $total = count($this->getORM()->queryAll($sql, $params));
         return intval($total);
     }
 

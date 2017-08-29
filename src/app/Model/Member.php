@@ -56,69 +56,83 @@ class Member extends NotORM {
 
     public function getListItems($status, $pageNo, $pageSize, $login_name, $real_name, $balance) {
 
-        $sql = "SELECT id, login_name, real_name, mobile, balance, gender, status, create_time FROM member";
-        \PhalApi\DI()->response->setDebug('status', $status);
-        \PhalApi\DI()->response->setDebug('login_name', $login_name);
-        \PhalApi\DI()->response->setDebug('real_name', $real_name);
-        \PhalApi\DI()->response->setDebug('balance', $balance);
+        $condition = array();
         if($status !== null) {
-            $sql .= " WHERE status = :status";
+            $condition['status'] = $status;
         }
-
-        // 为了解决like语句的字符串拼接，费了老大劲儿了~
-        if($login_name !== null) {            
-            strpos($sql, 'WHERE') ? 
-                ($sql .= " AND login_name LIKE CONCAT('%', :login_name, '%')") : 
-                ($sql .= " WHERE login_name LIKE CONCAT('%', :login_name, '%')");
+        if($login_name != null) {
+            $condition['login_name LIKE ?'] = '%'.$login_name.'%';
         }
-        if($real_name !== null) {
-            strpos($sql, 'WHERE') ? 
-            ($sql .= " AND real_name LIKE CONCAT('%', :real_name, '%')") : 
-            ($sql .= " WHERE real_name LIKE CONCAT('%', :real_name, '%')");
+        if($real_name != null) {
+            $condition['real_name LIKE ?'] = '%'.$real_name.'%';
         }
-        if($balance !== null) {            
-            strpos($sql, 'WHERE') ? ($sql .= " AND balance < :balance") : ($sql .= " WHERE balance < :balance");
+        if($balance != null) {
+            $condition['balance < ?'] = $balance;
         }
-        $sql .= " ORDER BY create_time DESC LIMIT ".($pageNo - 1) * $pageSize.",".$pageSize.";";
-        $params = array(
-            ':status' => $status,
-            ':login_name' => $login_name,
-            ':real_name' => $real_name,
-            ':balance' => $balance,
-        ); 
-
-        return $this->getORM()->queryAll($sql, $params);
+        return $this->getORM()
+            ->select('id, login_name, real_name, mobile, balance, gender, status, create_time')
+            ->where($condition)
+            ->order('create_time DESC')
+            ->limit(($pageNo - 1) * $pageSize, $pageSize)
+            ->fetchAll();
     }
 
+    // public function getListItems2($status, $pageNo, $pageSize, $login_name, $real_name, $balance) {
+
+    //     $sql = "SELECT id, login_name, real_name, mobile, balance, gender, status, create_time FROM member";
+    //     \PhalApi\DI()->response->setDebug('status', $status);
+    //     \PhalApi\DI()->response->setDebug('login_name', $login_name);
+    //     \PhalApi\DI()->response->setDebug('real_name', $real_name);
+    //     \PhalApi\DI()->response->setDebug('balance', $balance);
+    //     if($status !== null) {
+    //         $sql .= " WHERE status = :status";
+    //     }
+
+    //     // 为了解决like语句的字符串拼接，费了老大劲儿了~
+    //     if($login_name !== null) {            
+    //         strpos($sql, 'WHERE') ? 
+    //             ($sql .= " AND login_name LIKE CONCAT('%', :login_name, '%')") : 
+    //             ($sql .= " WHERE login_name LIKE CONCAT('%', :login_name, '%')");
+    //     }
+    //     if($real_name !== null) {
+    //         strpos($sql, 'WHERE') ? 
+    //         ($sql .= " AND real_name LIKE CONCAT('%', :real_name, '%')") : 
+    //         ($sql .= " WHERE real_name LIKE CONCAT('%', :real_name, '%')");
+    //     }
+    //     if($balance !== null) {            
+    //         strpos($sql, 'WHERE') ? ($sql .= " AND balance < :balance") : ($sql .= " WHERE balance < :balance");
+    //     }
+    //     $sql .= " ORDER BY create_time DESC LIMIT ".($pageNo - 1) * $pageSize.",".$pageSize.";";
+    //     $params = array(
+    //         ':status' => $status,
+    //         ':login_name' => $login_name,
+    //         ':real_name' => $real_name,
+    //         ':balance' => $balance,
+    //     ); 
+
+    //     return $this->getORM()->queryAll($sql, $params);
+    // }
+
     public function getListTotal($status, $login_name, $real_name, $balance) {
-        $sql = "SELECT id FROM member";
-        
+
+        $condition = array();
         if($status !== null) {
-            $sql .= " WHERE status = :status";
+            $condition['status'] = $status;
+        }
+        if($login_name != null) {           
+            $condition['login_name LIKE ?'] = '%'.$login_name.'%';
+        }
+        if($real_name != null) {
+            $condition['real_name LIKE ?'] = '%'.$real_name.'%';
+        }
+        if($balance != null) {
+            $condition['balance < ?'] = $balance;
         }
 
-        // 为了解决like语句的字符串拼接，费了老大劲儿了~
-        if($login_name !== null) {            
-            strpos($sql, 'WHERE') ? 
-                ($sql .= " AND login_name LIKE CONCAT('%', :login_name, '%')") : 
-                ($sql .= " WHERE login_name LIKE CONCAT('%', :login_name, '%')");
-        }
-        if($real_name !== null) {
-            strpos($sql, 'WHERE') ? 
-            ($sql .= " AND real_name LIKE CONCAT('%', :real_name, '%')") : 
-            ($sql .= " WHERE real_name LIKE CONCAT('%', :real_name, '%')");
-        }
-        if($balance !== null) {            
-            strpos($sql, 'WHERE') ? ($sql .= " AND balance < :balance") : ($sql .= " WHERE balance < :balance");
-        }
-        $sql .= ";";
-        $params = array(
-            ':status' => $status,
-            ':login_name' => $login_name,
-            ':real_name' => $real_name,
-            ':balance' => $balance,
-        ); 
-        $total = count($this->getORM()->queryAll($sql, $params));
+        $total = $this->getORM()
+            ->where($condition)
+            ->count('id');
+
         return intval($total);
     }
 
