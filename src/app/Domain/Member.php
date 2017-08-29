@@ -2,6 +2,8 @@
 namespace App\Domain;
 
 use App\Model\Member as Model;
+use App\Model\FeeRecord as FeeRecordModel;
+use App\Common\Utils as Utils;
 use PhalApi\Exception\BadRequestException;
 
 class Member {
@@ -94,5 +96,71 @@ class Member {
         $rs['total'] = $total;
 
         return $rs;
-    }    
+    }  
+    
+    public function recharge($id, $newData) {
+        $rs;       
+        $model = new Model(); 
+        $utils = new Utils();
+        $param1 = $utils->arrayCopy($newData, array('operator_id', 'remark'));
+
+        $last_balance = $model->get($id, 'balance');
+        $param1['balance'] = $last_balance['balance'] + $param1['balance'];
+        $rs['code'] = $model->update($id, $param1);
+        $after_balance = $model->get($id, 'balance')['balance'];
+
+        $feeRecordModel = new FeeRecordModel();
+        $param1 = $utils->arrayCopy($newData, array('balance'));
+        $param1['member_id'] = $id;
+        $param1['last_balance'] = $last_balance;
+        $param1['after_balance'] = $after_balance;
+        $param1['type'] = "1";
+        $param1['create_time'] = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+        $rs['record_id'] = $feeRecordModel->insert($param1);
+        return $rs;
+    }
+
+    public function deductProgramFee($id, $newData) {
+        $rs;       
+        $model = new Model(); 
+        $utils = new Utils();
+        $param1 = $utils->arrayCopy($newData, array('operator_id', 'remark'));
+
+        $last_balance = $model->get($id, 'balance');
+        $param1['balance'] =  $last_balance['balance'] - $param1['balance'];
+        $rs['code'] = $model->update($id, $param1);
+        $after_balance = $model->get($id, 'balance')['balance'];
+
+        $feeRecordModel = new FeeRecordModel();
+        $param1 = $utils->arrayCopy($newData, array('balance'));
+        $param1['member_id'] = $id;
+        $param1['last_balance'] = $last_balance;
+        $param1['after_balance'] = $after_balance;
+        $param1['type'] = "2";
+        $param1['create_time'] = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+        $rs['record_id'] = $feeRecordModel->insert($param1);
+        return $rs;
+    }
+
+    public function deductProductFee($id, $newData) {
+        $rs;       
+        $model = new Model(); 
+        $utils = new Utils();
+        $param1 = $utils->arrayCopy($newData, array('operator_id', 'remark'));
+
+        $last_balance = $model->get($id, 'balance');
+        $param1['balance'] = $last_balance['balance'] - $param1['balance'];
+        $rs['code'] = $model->update($id, $param1);
+        $after_balance = $model->get($id, 'balance')['balance'];
+
+        $feeRecordModel = new FeeRecordModel();
+        $param1 = $utils->arrayCopy($newData, array('balance'));
+        $param1['member_id'] = $id;
+        $param1['last_balance'] = $last_balance;
+        $param1['after_balance'] = $after_balance;
+        $param1['type'] = "3";
+        $param1['create_time'] = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+        $rs['record_id'] = $feeRecordModel->insert($param1);
+        return $rs;
+    }
 }

@@ -50,7 +50,7 @@ WHERE t.`status` = '1' AND t.charge_user_id = u.id AND t.fee_type_id = f.id;
 #查询结果追加报名参加的人， IN后面的ids就是program 中的 participant_ids
 SELECT t1.name, t1.mobile FROM participant t1 WHERE t1.sign_member_id IN('1','2','3') AND t1.program_id = '1';
 
-#2.报名、报候补、放鸽子
+#2.报名、报候补、放鸽子---ok
 #2.1.查询客户是否已经报名
 SELECT count(t1.id) FROM participant t1, program t2 WHERE t1.program_id = t2.id AND t1.sign_member_id = '1';
 
@@ -80,7 +80,7 @@ UPDATE program AS t1 set t1.participant_ids = '1,2' WHERE t1.id = '1';
 UPDATE program AS t1 set t1.participant_ids = '1' WHERE t1.id = '1';
 DELETE FROM participant WHERE id = '2';
 
-##管理员增加场地##
+##管理员增加场地##--ok
 #participant_ids数量-field_num*max_num>=4
 UPDATE program AS t1 set t1.field_num = '2' WHERE t1.id = '1';
 
@@ -105,7 +105,7 @@ UPDATE program AS t1 set t1.`status` = '4' WHERE t1.id = '1';
 ##取消活动##---ok
 UPDATE program AS t1 set t1.`status` = '0' WHERE t1.id = '1';
 
-##会员充值##
+##会员充值##---ok
 UPDATE member AS t1 SET t1.balance = '100' WHERE t1.id = '1';
 INSERT INTO fee_records(member_id, type, operator_id, operate_time, last_balance, after_balance) VALUES(
 	'1',

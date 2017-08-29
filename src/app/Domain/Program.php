@@ -53,20 +53,19 @@ class Program {
         return $rs;
     }
 
-    /**
-     * 报名活动
-     * @desc 报名活动
-     * @return int      id          活动ID
-     */
-    public function signUp($newData) {
-        $model = new Model();
+    public function signUp($participants) {
+        $participantModel = new ParticipantModel();
+        return $participantModel->signUp($participants);
+    }
 
-        $programs = $model->getProgramsByStartTime($newData['start_time']);
-        if(count($programs) > 0) {
-            throw new BadRequestException($newData['start_time'].'已经有活动：'.$programs['0']['name'], 1);
-        }
-        $newData['create_time'] = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
-        return $model->add($newData);
+    public function cancelSignUp($id) {
+        $participantModel = new ParticipantModel();
+        return $participantModel->delete($id);
+    }
+
+    public function absence($id, $newData) {
+        $participantModel = new ParticipantModel();
+        return $participantModel->update($id, $newData);
     }
 
     public function getList($pageNo, $pageSize, $status, $name, $start_time, $end_time) {

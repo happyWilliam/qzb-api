@@ -55,8 +55,22 @@ class Member extends Api {
                 'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
             ),
             'recharge' => array(
-                'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
+                'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => '会员ID'),
+                'operator_id' => array('name' => 'operator_id', 'require' => true, 'min' => 1, 'desc' => '管理员ID'),
                 'balance' => array('name' => 'balance', 'type' => 'float', 'require' => true, 'min' => 1, 'desc' => '充值金额'),
+                'remark' => array('name' => 'remark', 'max' => 150, 'default'=>'会费充值', 'desc' => '备注'),
+            ),
+            'deductProgramFee' => array(
+                'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => '会员ID'),
+                'operator_id' => array('name' => 'operator_id', 'require' => true, 'min' => 1, 'desc' => '管理员ID'),
+                'balance' => array('name' => 'balance', 'type' => 'float', 'require' => true, 'min' => 1, 'desc' => '扣减金额'),
+                'remark' => array('name' => 'remark', 'max' => 150, 'default'=>'羽毛球活动费用扣减', 'desc' => '备注'),
+            ),
+            'deductProductFee' => array(
+                'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => '会员ID'),
+                'operator_id' => array('name' => 'operator_id', 'require' => true, 'min' => 1, 'desc' => '管理员ID'),
+                'balance' => array('name' => 'balance', 'type' => 'float', 'require' => true, 'min' => 1, 'desc' => '扣减金额'),
+                'remark' => array('name' => 'remark', 'max' => 150, 'default'=>'购买商品扣减', 'desc' => '备注'),
             ),
             
         );
@@ -241,4 +255,61 @@ class Member extends Api {
 
         return $rs;
     }
+
+    /**
+     * 会员充值
+     * @desc 根据ID会员充值
+     * @return int code      会员充值的结果，1表示成功，0表示无更新，false表示失败
+     * @return int record_id 会员充值的费用变更记录ID
+     */
+    public function recharge() {
+        $rs = array();
+        $newData = array(
+            'operator_id' => $this->operator_id,
+            'balance' => $this->balance,
+            'remark' => $this->remark,
+        );
+
+        $domain = new Domain();
+        $rs = $domain->recharge($this->id, $newData);        
+        return $rs;
+    }
+
+    /**
+     * 会员参加活动扣费
+     * @desc 根据ID会员参加活动扣费
+     * @return int code      会员参加活动扣费的结果，1表示成功，0表示无更新，false表示失败
+     * @return int record_id 会员参加活动扣费的费用变更记录ID
+     */
+    public function deductProgramFee() {
+        $rs = array();
+        $newData = array(
+            'operator_id' => $this->operator_id,
+            'balance' => $this->balance,
+            'remark' => $this->remark,
+        );
+
+        $domain = new Domain();
+        $rs = $domain->deductProgramFee($this->id, $newData);        
+        return $rs;
+    }
+
+    /**
+     * 会员购买商品扣费
+     * @desc 根据ID会员购买商品扣费
+     * @return int code      会员购买商品扣费的结果，1表示成功，0表示无更新，false表示失败
+     * @return int record_id 会员购买商品扣费的费用变更记录ID
+     */
+    public function deductProductFee() {
+        $rs = array();
+        $newData = array(
+            'operator_id' => $this->operator_id,
+            'balance' => $this->balance,
+            'remark' => $this->remark,
+        );
+
+        $domain = new Domain();
+        $rs = $domain->deductProductFee($this->id, $newData);        
+        return $rs;
+    }    
 }

@@ -25,14 +25,19 @@ class Program extends Api {
                 'charge_user_id' => array('name' => 'charge_user_id', 'require' => true, 'min' => 1, 'desc' => '活动组织负责人ID'),                
             ),
             'signUp' => array(
-                'participants' => array(
-                    'name' => array('name' => 'name', 'require' => true, 'min' => 1, 'max' => '100', 'desc' => '活动名称'),
-                    'mobile' => array('name' => 'mobile', 'regex' => "/^1[34578]\d{9}$/", 'desc' => '手机号码'),
-                    'sign_member_id' => array('name' => 'sign_member_id', 'require' => true, 'min' => 1, 'desc' => '主报名人ID'),
-                    'program_id' => array('name' => 'program_id', 'require' => true, 'min' => 1, 'desc' => '活动ID'),
-                    'gender' => array('name' => 'gender', 'require' => true, 'type' => 'enum', 'range' => array('0', '1', '-1'), 'desc' => '性别'),
-                    'member_id' => array('name' => 'member_id', 'require' => true, 'min' => 1, 'desc' => '参与活动者的会员ID，如果是外带人员，这个ID为空'),            
+                'participants' => array('name' => 'participants', 'require' => true, 'type' => 'array', 'desc' => '活动参加者'
+                    // 'name' => array('name' => 'name', 'require' => true, 'min' => 1, 'max' => '100', 'desc' => '报名人姓名'),
+                    // 'mobile' => array('name' => 'mobile', 'regex' => "/^1[34578]\d{9}$/", 'desc' => '手机号码'),
+                    // 'program_id' => array('name' => 'program_id', 'require' => true, 'min' => 1, 'desc' => '活动ID'),
+                    // 'gender' => array('name' => 'gender', 'require' => true, 'type' => 'enum', 'range' => array('0', '1', '-1'), 'desc' => '性别'),
+                    // 'member_id' => array('name' => 'member_id', 'require' => true, 'min' => 1, 'desc' => '参与活动者的会员ID，如果是外带人员，这个ID为空'),            
                 )
+            ),
+            'cancelSignUp' => array(
+                'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
+            ),
+            'absence' => array(
+                'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
             ),
             'get' => array(
                 'id' => array('name' => 'id', 'require' => true, 'min' => 1, 'desc' => 'ID'),
@@ -94,6 +99,53 @@ class Program extends Api {
     }
 
     /**
+     * 报名活动
+     * @desc 报名活动
+     * @return int      id          活动ID
+     */
+    public function signUp() {        
+       // 测试语句
+       // http://127.0.0.4/public/?service=App.Program.SignUp&id=1&participants[0]={"name":"aaa","mobile";"13692110606","sign_member_id":"1","program_id":"1","gender":"1","member_id":"1"}&participants[1]={"name":"aaa","mobile";"13692110606","sign_member_id":"1","program_id":"1","gender":"1","member_id":"1"}
+        $domain = new Domain();
+       $participants = $this->participants;
+       return $domain->signUp($participants);
+    }
+
+    /**
+     * 取消报名
+     * @desc 根据ID取消报名
+     * @return int code 取消报名的结果，1表示成功，0表示无更新，false表示失败
+     */
+     public function cancelSignUp() {
+        $rs = array();
+
+        $domain = new Domain();
+        $code = $domain->cancelSignUp($this->id);
+
+        $rs['code'] = $code;
+        return $rs;
+    }
+
+    /**
+     * 放鸽子
+     * @desc 根据ID放鸽子
+     * @return int code 放鸽子的结果，1表示成功，0表示无更新，false表示失败
+     */
+     public function absence() {
+        $rs = array();
+        
+        $newData = array(
+            'absence' => '1',
+        );
+
+        $domain = new Domain();
+        $code = $domain->absence($this->id, $newData);
+
+        $rs['code'] = $code;
+        return $rs;
+    }
+
+    /**
      * 获取数据
      * @desc 根据ID获取活动信息
      * @return int        id                 主键ID
@@ -109,21 +161,10 @@ class Program extends Api {
      * @return array      charger            活动负责人
      * @return array      participants       参加活动者
      */
-     public function get() {
+    public function get() {
         $domain = new Domain();
         $data = $domain->get($this->id);
         return $data;
-    }
-
-    /**
-     * 报名活动
-     * @desc 报名活动
-     * @return int      id          活动ID
-     */
-     public function signUp($participants) {
-         
-        $domain = new Domain();
-        return $domain->signUp($participants);
     }
 
     /**
