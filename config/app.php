@@ -30,4 +30,13 @@ return array(
     'service_whitelist' => array(
         'Site.Index',
     ),
+
+    /**
+     * 不需要filter进行登录验证拦截的接口名单
+     *
+     * 示例：
+     */
+    'not_need_login_api' => array(
+        'App.Program.GetList',
+    ),
 );

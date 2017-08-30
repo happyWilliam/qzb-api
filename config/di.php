@@ -49,12 +49,15 @@ $di->request = new App\Common\Request();
 $di->filter = new \PhalApi\Filter\SimpleMD5Filter();
  */
 
-/**
+// 签名验证服务
+$di->filter = new \App\Common\LoginFilter();
+
 // 缓存 - Memcache/Memcached
 $di->cache = function () {
-    return new \PhalApi\Cache\MemcacheCache(DI()->config->get('sys.mc'));
+
+    return new \PhalApi\Cache\MemcachedCache(\PhalApi\DI()->config->get('sys.mc'));
 };
- */
+
 
 /**
 // 支持JsonP的返回
