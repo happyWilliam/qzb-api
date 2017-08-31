@@ -55,7 +55,7 @@ $di->filter = new \App\Common\LoginFilter();
 // 缓存 - Memcache/Memcached
 $di->cache = function () {
 
-    return new \PhalApi\Cache\MemcachedCache(\PhalApi\DI()->config->get('sys.mc'));
+    return new \PhalApi\Cache\MemcacheCache(\PhalApi\DI()->config->get('sys.mc'));
 };
 
 
