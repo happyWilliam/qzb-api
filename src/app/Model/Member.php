@@ -28,7 +28,8 @@ class Member extends NotORM {
             ->where('(login_name = ? OR mobile = ?)', $params['login_name'], $params['login_name'])
             ->where('pwd', $params['pwd'])
             ->where('del_flag', '0')
-            ->where('status', 1);         
+            ->where('status', 1)
+            ->fetch();   
     }
 
     public function register($data, $id = NULL) {

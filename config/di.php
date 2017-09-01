@@ -52,11 +52,17 @@ $di->filter = new \PhalApi\Filter\SimpleMD5Filter();
 // 签名验证服务
 $di->filter = new \App\Common\LoginFilter();
 
-// 缓存 - Memcache/Memcached
-$di->cache = function () {
-
-    return new \PhalApi\Cache\MemcacheCache(\PhalApi\DI()->config->get('sys.mc'));
-};
+// 缓存 - Memcache/Memcached---这货坑了我两天时间
+// 以下代码原先使用的是：MemcachedCache(\PhalApi\DI()->config->get('sys.mc'));,修改后使用了MemcacheCache
+// 此外还需要安装memcached并启动 参考http://www.runoob.com/memcached/window-install-memcached.html
+// php需要安装扩展，安装方式：
+// 1.下载使用php版本对应的memcache扩展包，64位和32位感觉不太准，所以对应php版本的都下载下来  http://windows.php.net/downloads/pecl/releases/memcache/3.0.8/
+// 2.解压包，将其中的php_memcache.dll复制到php  ext目录下，例如：E:\software\phpStudy\php\php-5.6.27-nts\ext
+// 3.php-int文件最后面加一句：extension=php_memcache.dll 
+// 4.重启应用即可
+// $di->cache = function () {
+//     return new \PhalApi\Cache\MemcacheCache(\PhalApi\DI()->config->get('sys.mc'));
+// };
 
 
 /**

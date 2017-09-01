@@ -15,7 +15,7 @@ return array(
     'apiCommonRules' => array(
         // 'sign' => array('name' => 'sign', 'require' => true),
         // 1-PC，2-安卓，3-苹果手机
-        'channel' => array('name' => 'channel', 'require' => false, 'default' => 1, 'desc' => '请求来源，1-PC，2-安卓，3-苹果手机')
+        'channel' => array('name' => 'channel', 'require' => false, 'default' => 1, 'desc' => '请求来源，1-PC，2-安卓，3-苹果手机'),
     ),
 
     /**
@@ -39,4 +39,9 @@ return array(
     'not_need_login_api' => array(
         'App.Program.GetList',
     ),
+
+    /**
+     * 加密秘钥
+     */
+     'key' => 'cqmygysdssjtwmydtsgx',
 );

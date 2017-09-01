@@ -10,6 +10,7 @@ class Member {
 
     public function login($params) {
         $model = new Model();
+        $utils = new Utils();
         $user = $model->getMemberByLoginName($params['login_name']); 
         if(count($user) <= 0) {
             $user = $model->getMemberByMobile($params['login_name']);
@@ -23,11 +24,14 @@ class Member {
             throw new BadRequestException('用户 '.$params['login_name'].' 已经被停用', 1);
         }        
 
-        $user = $model->login($params);
         if(count($user) <= 0) {
             throw new BadRequestException('用户名或密码错误', 1);
         }
-        return $model->login($params);
+
+        $rs = $model->login($params);         
+
+        $member_token = $utils->JWTEncode(array('member_info' => $rs));
+        return array_merge($rs, array("member_token" => $member_token));
     }
 
     public function register($newData) {
@@ -87,6 +91,13 @@ class Member {
     }
 
     public function getList($status, $pageNo, $pageSize, $login_name, $real_name, $balance) {
+
+        $_SERVER;
+        $A = $_SERVER['REQUEST_TIME'];
+        $newData['create_time'] = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']+10*24*60*60);
+
+
+
         $rs = array('items' => array(), 'total' => 0);
         $model = new Model();
         $items = $model->getListItems($status, $pageNo, $pageSize, $login_name, $real_name, $balance);
