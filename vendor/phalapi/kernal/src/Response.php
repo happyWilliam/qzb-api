@@ -33,7 +33,12 @@ abstract class Response {
     /**
      * @var array $headers 响应报文头部
      */
-    protected $headers = array();
+    protected $headers = array(
+        // modify by wnagyi, 为了可以跨域
+        'Access-Control-Allow-Origin' => '*',
+        'Access-Control-Allow-Methods' => 'POST, GET, OPTIONS, PUT, DELETE',
+        'Access-Control-Allow-Headers' => 'Content-Type, X-Auth-Token, Origin',
+    );
 
     /**
      * @var array $debug 调试信息
@@ -91,7 +96,7 @@ abstract class Response {
      * @param string $content 内容
      */
     public function addHeaders($key, $content) {
-    	$this->headers[$key] = $content;
+        $this->headers[$key] = $content;        
     }
 
     /** ------------------ 结果输出 ------------------ **/
