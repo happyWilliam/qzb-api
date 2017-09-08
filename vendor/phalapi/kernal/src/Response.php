@@ -36,8 +36,10 @@ abstract class Response {
     protected $headers = array(
         // modify by wnagyi, 为了可以跨域
         'Access-Control-Allow-Origin' => '*',
-        'Access-Control-Allow-Methods' => 'POST, GET, OPTIONS, PUT, DELETE',
-        'Access-Control-Allow-Headers' => 'Content-Type, X-Auth-Token, Origin',
+        'Access-Control-Allow-Methods' => 'PUT ,POST, GET, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers' => 'Content-Type, X-Auth-Token, Origin, X-Requested-With, accept',
+        // 'X-Powered-By' => '3.2.1',
+        'Content-Type' => 'application/json;charset=utf-8',
     );
 
     /**
